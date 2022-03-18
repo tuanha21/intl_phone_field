@@ -261,7 +261,7 @@ class IntlPhoneField extends StatefulWidget {
     @Deprecated('Use searchFieldInputDecoration of PickerDialogStyle instead')
         this.searchText = 'Search country',
     this.dropdownIconPosition = IconPosition.leading,
-    this.dropdownIcon = const Icon(Icons.arrow_drop_down),
+    this.dropdownIcon = const Icon(Icons.keyboard_arrow_down_outlined),
     this.autofocus = false,
     this.textInputAction,
     this.autovalidateMode = AutovalidateMode.onUserInteraction,
@@ -374,7 +374,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
       onFieldSubmitted: widget.onSubmitted,
       decoration: widget.decoration.copyWith(
         prefixIcon: _buildFlagsButton(),
-        counterText: !widget.enabled ? '' : null,
+        counterText: '',
       ),
       style: widget.style,
       onSaved: (value) {
@@ -433,19 +433,25 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                if (widget.showCountryFlag) ...[
+                  SizedBox(width: 10),
+                  Image.asset(
+                    'assets/rounded_flags/${_selectedCountry.code.toLowerCase()}.png',
+                    package: 'intl_phone_field',
+                    width: 24,
+                  ),
+                ],
                 if (widget.enabled &&
                     widget.showDropdownIcon &&
                     widget.dropdownIconPosition == IconPosition.leading) ...[
+                  SizedBox(width: 3),
                   widget.dropdownIcon,
-                  SizedBox(width: 4),
-                ],
-                if (widget.showCountryFlag) ...[
-                  Image.asset(
-                    'assets/flags/${_selectedCountry.code.toLowerCase()}.png',
-                    package: 'intl_phone_field',
-                    width: 32,
+                  Container(
+                    width: 1,
+                    height: 28,
+                    color: Colors.grey,
                   ),
-                  SizedBox(width: 8),
+                  SizedBox(width: 3),
                 ],
                 FittedBox(
                   child: Text(
