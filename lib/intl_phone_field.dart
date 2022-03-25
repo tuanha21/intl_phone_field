@@ -351,15 +351,14 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
           (item) => item.code == (widget.initialCountryCode ?? 'US'),
           orElse: () => _countryList.first);
     }
+    final initialPhoneNumber = PhoneNumber(
+      countryISOCode: _selectedCountry.code,
+      countryCode: '+${_selectedCountry.dialCode}',
+      number: widget.initialValue ?? '',
+    );
+    _initialValue = initialPhoneNumber;
 
     if (widget.autovalidateMode == AutovalidateMode.always) {
-      final initialPhoneNumber = PhoneNumber(
-        countryISOCode: _selectedCountry.code,
-        countryCode: '+${_selectedCountry.dialCode}',
-        number: widget.initialValue ?? '',
-      );
-      _initialValue = initialPhoneNumber;
-
       final value = widget.validator?.call(initialPhoneNumber);
 
       if (value is String) {
