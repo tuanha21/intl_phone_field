@@ -14,7 +14,7 @@ typedef InputValidator = String? Function(PhoneNumber? value);
 
 class IntlPhoneField extends StatefulWidget {
   /// FormKey
-  final GlobalKey<FormFieldState<String?>>? formKey;
+  final GlobalKey<FormFieldState<PhoneNumber>>? formKey;
 
   /// Validator
 
@@ -327,7 +327,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
 
   bool hasError(bool hasError) => hasError && !typing;
   bool _obscureText = false;
-  PhoneNumber? _initialValue;
+  late PhoneNumber _initialValue;
 
   @override
   void initState() {
@@ -338,7 +338,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
             .where((country) => widget.countries!.contains(country.code))
             .toList();
     filteredCountries = _countryList;
-    number = widget.initialValue ?? '';
+    number = widget.controller?.text ?? "";
     if (widget.initialCountryCode == null && number.startsWith('+')) {
       number = number.substring(1);
       // parse initial value
@@ -354,9 +354,11 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
     final initialPhoneNumber = PhoneNumber(
       countryISOCode: _selectedCountry.code,
       countryCode: '+${_selectedCountry.dialCode}',
-      number: widget.initialValue ?? '',
+      number: number,
     );
     _initialValue = initialPhoneNumber;
+
+    widget.formKey?.currentState?.didChange(_initialValue);
 
     if (widget.autovalidateMode == AutovalidateMode.always) {
       final value = widget.validator?.call(initialPhoneNumber);
@@ -408,7 +410,8 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                TextField(
+                TextFormField(
+                  initialValue: (widget.controller == null) ? number : null,
                   focusNode: widget.focusNode,
                   controller: widget.controller,
                   obscureText: _obscureText,
